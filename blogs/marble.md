@@ -1,9 +1,9 @@
 ---
-title: marble
+title: matterjs 实现弹珠台
 categories: 前端
 date: 2023-12-21 22:48:45
 tags:
-    - 动画
+  - 动画
 ---
 
 # matterjs 实现弹珠台
@@ -289,68 +289,68 @@ PATHS 里的路径可以在[SvgPathEditor](https://yqnn.github.io/svg-path-edito
 采用的方案是通过[SvgPathEditor](https://yqnn.github.io/svg-path-editor/)绘制半圆，并得到对应的 SVG，然后再通过`Matter.Svg.pathToVertices`来将 SVG 路径转成物块。
 
 1. 绘制
-   
+
    ![](https://www.clzczh.top/CLZ_img/images/202312190019465.png)
-   
+
    ![](https://www.clzczh.top/CLZ_img/images/202312190031686.png)
 
 2. 加载 SVG，并将 path 元素通过`Matter.Svg.pathToVeritices(path, 36)`将 path 转成顶点 Vertices。
-   
+
    ```js
    const loadSvg = function (url) {
-   return fetch(url)
-     .then(function (response) {
-       return response.text();
-     })
-     .then(function (raw) {
-       // 把加载的svg转成document对象
-       return new window.DOMParser().parseFromString(raw, "image/svg+xml");
-     });
-   };
-   
-   function svg(x, y, svgName) {
-   loadSvg(`/svg/${svgName}.svg`).then((root) => {
-     const vertices = [...root.querySelectorAll("path")].map((path) => {
-       return Matter.Svg.pathToVertices(path, 36);
-     });
-   
-     Matter.Composite.add(
-       engine.world,
-       Matter.Bodies.fromVertices(x, y, vertices, {
-         isStatic: true,
-         render: {
-           fillStyle: "#495057",
-           lineWidth: 1,
-         },
+     return fetch(url)
+       .then(function (response) {
+         return response.text();
        })
-     );
-   });
+       .then(function (raw) {
+         // 把加载的svg转成document对象
+         return new window.DOMParser().parseFromString(raw, "image/svg+xml");
+       });
+   };
+
+   function svg(x, y, svgName) {
+     loadSvg(`/svg/${svgName}.svg`).then((root) => {
+       const vertices = [...root.querySelectorAll("path")].map((path) => {
+         return Matter.Svg.pathToVertices(path, 36);
+       });
+
+       Matter.Composite.add(
+         engine.world,
+         Matter.Bodies.fromVertices(x, y, vertices, {
+           isStatic: true,
+           render: {
+             fillStyle: "#495057",
+             lineWidth: 1,
+           },
+         })
+       );
+     });
    }
    ```
 
 3. 通过`Matter.Bodies.fromVertices`根据顶点生成物块，并添加到物理世界中。
 
 4. 调用方法`svg`
-   
+
    ```js
    function addBoundries() {
-   svg(236, 80, "dome");
-   // ...
+     svg(236, 80, "dome");
+     // ...
    }
    ```
 
 5. 安装`pathseg`和`poly-decomp`。
-   
-   `pathseg`：因为`Matter.Svg.pathToVertices`不支持复杂路径，所以需要`pathseg`来polyfill。
-   
-   `poly-decomp`：将2D多边形分解为凸块（matter-js不支持凹顶点）\color{red}{凹凸顶点有机会再了解}
-   
+
+   `pathseg`：因为`Matter.Svg.pathToVertices`不支持复杂路径，所以需要`pathseg`来 polyfill。
+
+   `poly-decomp`：将 2D 多边形分解为凸块（matter-js 不支持凹顶点）\color{red}{凹凸顶点有机会再了解}
+
    ```js
-   import 'pathseg';
-   
+   import "pathseg";
+
    function init() {
-   Matter.Common.setDecomp(require('poly-decomp')); 
-   // ...
+     Matter.Common.setDecomp(require("poly-decomp"));
+     // ...
    }
    ```
 
@@ -365,57 +365,57 @@ PATHS 里的路径可以在[SvgPathEditor](https://yqnn.github.io/svg-path-edito
 上面的蓝色物块就是觉得没必要，后面才发现很有必要的。添加好后，设置`visible`为`false`即可。
 
 1. 添加键盘事件
-   
+
    ```js
    let isLeftPaddleUp = false;
    let isRightPaddleUp = false;
    function addEvents() {
-   window.addEventListener('keypress', (e) => {
-     if (e.key.toLowerCase() === 'a') {
-       isLeftPaddleUp = true;
-     } else {
-       isLeftPaddleUp = false;
-     }
-   
-     if (e.key.toLowerCase() === 'd') {
-       isRightPaddleUp = true;
-     } else {
-       isRightPaddleUp = false;
-     }
-   })
-   
-   window.addEventListener('keyup', (e) => {
-     if (e.key.toLowerCase() === 'a') {
-       isLeftPaddleUp = false;
-     }
-   
-     if (e.key.toLowerCase() === 'd') {
-       isRightPaddleUp = false;
-     }
-   })
-   } 
+     window.addEventListener("keypress", (e) => {
+       if (e.key.toLowerCase() === "a") {
+         isLeftPaddleUp = true;
+       } else {
+         isLeftPaddleUp = false;
+       }
+
+       if (e.key.toLowerCase() === "d") {
+         isRightPaddleUp = true;
+       } else {
+         isRightPaddleUp = false;
+       }
+     });
+
+     window.addEventListener("keyup", (e) => {
+       if (e.key.toLowerCase() === "a") {
+         isLeftPaddleUp = false;
+       }
+
+       if (e.key.toLowerCase() === "d") {
+         isRightPaddleUp = false;
+       }
+     });
+   }
    ```
-   
+
    function load() {
    init();
    addBoundries();
    addEvents();
    }
 
-```
+````
 2.  使用`matter-attractors`，创建stopper物块。
 
 ```js
-// 1. 
-import MatterAttractors from 'matter-attractors'; 
+// 1.
+import MatterAttractors from 'matter-attractors';
 
 
 function init() {
-  Matter.use(MatterAttractors); 
+  Matter.use(MatterAttractors);
   // ...
-} 
+}
 
-// 2. 
+// 2.
 function getPaddleStatus(side) {
   const isPaddleUp = side === 'left' ? isLeftPaddleUp : isRightPaddleUp;
   return isPaddleUp;
@@ -454,7 +454,7 @@ function stopper(x, y, side, position) {
 }
 
 
-// 3. 
+// 3.
 function addPaddles() {
   const stoperLeftTop = stopper(170, 460, 'left', 'top');
   const stoperLeftBottom = stopper(136, 580, 'left', 'bottom');
@@ -466,109 +466,107 @@ function addPaddles() {
     stoperLeftBottom,
     stoperRightTop,
     stoperRightBottom
-  ]); 
+  ]);
 }
-```
+````
 
 ![](https://www.clzczh.top/CLZ_img/images/202312212126937.png)
 
 > `matter-attractors`可以对物块添加持续的力。通过键盘事件来控制力是引力还是斥力。直接添加会导致对所有物块都有影响，所以通过`label`来判断是否添加。
 
 3. 创建浆
-   
+
    ```js
    function addPaddles() {
-   const paddleLeft = {};
-   paddleLeft.paddle = Matter.Bodies.trapezoid(134, 512, 20, 88, 0.33, {
-    label: 'paddleLeft',
-    angle: 1.57,
-    chamfer: {},
-    render: {
-      fillStyle: 'skyblue'
-    }
-   });
-   
-   paddleLeft.brick = Matter.Bodies.rectangle(134, 524, 40, 40, {
-    render: {
-      fillStyle: 'blue',
-      // visible: false
-    }
-   });
-   
-   // 将两个物块组装在一起
-   paddleLeft.comp = Matter.Body.create({
-    label: 'paddleLeftComp',
-    parts: [paddleLeft.paddle, paddleLeft.brick]
-   }); 
-   
-   Matter.Composite.add(engine.world, [
-    paddleLeft.comp
-   ]);
+     const paddleLeft = {};
+     paddleLeft.paddle = Matter.Bodies.trapezoid(134, 512, 20, 88, 0.33, {
+       label: "paddleLeft",
+       angle: 1.57,
+       chamfer: {},
+       render: {
+         fillStyle: "skyblue",
+       },
+     });
+
+     paddleLeft.brick = Matter.Bodies.rectangle(134, 524, 40, 40, {
+       render: {
+         fillStyle: "blue",
+         // visible: false
+       },
+     });
+
+     // 将两个物块组装在一起
+     paddleLeft.comp = Matter.Body.create({
+       label: "paddleLeftComp",
+       parts: [paddleLeft.paddle, paddleLeft.brick],
+     });
+
+     Matter.Composite.add(engine.world, [paddleLeft.comp]);
    }
    ```
-   
+
    ![](https://www.clzczh.top/CLZ_img/images/202312212140086.png)
 
 4. 添加约束，固定浆
-   
+
    ```js
-   function addPaddles() { 
-   // ...
-   // bodyB表示给paddleLeft.comp添加约束，pointB则是相对paddleLeft.comp的坐标
-   // pointA是这个物理世界的坐标
-   const constraintLeft = Matter.Constraint.create({
-    bodyB: paddleLeft.comp,
-    pointB: {
-      x: -32,
-      y: -8
-    },
-    pointA: {
-      x: paddleLeft.comp.position.x,
-      y: paddleLeft.comp.position.y,
-    },
-    stiffness: 0.9,
-    length: 0,
-    render: {
-      strokeStyle: 'pink'
-    }
-   });
-   Matter.Composite.add(engine.world, constraintLeft); 
+   function addPaddles() {
+     // ...
+     // bodyB表示给paddleLeft.comp添加约束，pointB则是相对paddleLeft.comp的坐标
+     // pointA是这个物理世界的坐标
+     const constraintLeft = Matter.Constraint.create({
+       bodyB: paddleLeft.comp,
+       pointB: {
+         x: -32,
+         y: -8,
+       },
+       pointA: {
+         x: paddleLeft.comp.position.x,
+         y: paddleLeft.comp.position.y,
+       },
+       stiffness: 0.9,
+       length: 0,
+       render: {
+         strokeStyle: "pink",
+       },
+     });
+     Matter.Composite.add(engine.world, constraintLeft);
    }
    ```
-   
+
    ![](https://www.clzczh.top/CLZ_img/images/202312212153939.gif)
 
 5. 右边的浆同理
-   
+
    ```js
    const paddleRight = {};
    paddleRight.paddle = Matter.Bodies.trapezoid(304, 512, 20, 88, 0.33, {
      // isStatic: true,
-     label: 'paddleRight',
+     label: "paddleRight",
      angle: -1.57,
      chamfer: {},
      render: {
-       fillStyle: 'skyblue'
-     }
+       fillStyle: "skyblue",
+     },
    });
-   
+
    paddleRight.brick = Matter.Bodies.rectangle(304, 524, 40, 40, {
      render: {
-       fillStyle: 'blue',
+       fillStyle: "blue",
        // visible: false
-     }
+     },
    });
-   
+
    paddleRight.comp = Matter.Body.create({
-     label: 'paddleRightComp',
-     parts: [paddleRight.paddle, paddleRight.brick]
+     label: "paddleRightComp",
+     parts: [paddleRight.paddle, paddleRight.brick],
    });
-   
+
    const constraintRight = Matter.Constraint.create({
      bodyB: paddleRight.comp,
      pointB: {
        x: 32,
-       y: -8
+       y: -8,
      },
      pointA: {
        x: paddleRight.comp.position.x,
@@ -577,15 +575,12 @@ function addPaddles() {
      stiffness: 0.9,
      length: 0,
      render: {
-       strokeStyle: 'pink'
-     }
+       strokeStyle: "pink",
+     },
    });
    Matter.Composite.add(engine.world, constraintRight);
-   
-   Matter.Composite.add(engine.world, [
-     paddleLeft.comp,
-     paddleRight.comp
-   ]);
+
+   Matter.Composite.add(engine.world, [paddleLeft.comp, paddleRight.comp]);
    ```
 
 ## 添加弹珠，并添加碰撞事件，实现`reset`效果
@@ -594,8 +589,8 @@ function addPaddles() {
 function addMarble() {
   const marble = Matter.Bodies.circle(0, 0, 14, {
     render: {
-      fillStyle: 'green'
-    }
+      fillStyle: "green",
+    },
   });
   Matter.Composite.add(engine.world, marble);
 
@@ -610,32 +605,32 @@ function addMarble() {
     x: 0,
     y: -25,
   });
-} 
+}
 
-function addEvents() { 
+function addEvents() {
   // ...
-  Matter.Events.on(engine, 'collisionStart', (e) => {
+  Matter.Events.on(engine, "collisionStart", (e) => {
     e.pairs.forEach(function (pair) {
       const bodyA = pair.bodyA;
       const bodyB = pair.bodyB;
 
-      if (bodyA.label === 'reset') {
+      if (bodyA.label === "reset") {
         Matter.Composite.remove(engine.world, [bodyB]);
         addMarble();
       }
 
-      if (bodyB.label === 'reset') {
+      if (bodyB.label === "reset") {
         Matter.Composite.remove(engine.world, [bodyA]);
         addMarble();
       }
-    })
+    });
   });
 }
 ```
 
 ![](https://www.clzczh.top/CLZ_img/images/202312212206056.gif)
 
-## 给中间的5个圆加弹力
+## 给中间的 5 个圆加弹力
 
 > 现在的弹珠基本会掉到中间，浆根本没有用武之地。
 
@@ -655,12 +650,12 @@ function circle(x, y, radius) {
 }
 ```
 
-## 设置`group`。让stopper、marble它们变成“一伙”
+## 设置`group`。让 stopper、marble 它们变成“一伙”
 
 > 现在弹珠碰到`stopper`物块也会有碰撞效果。所以设置`group`，成群之后就不会再有碰撞效果了。
 
 ```js
-const group = Matter.Body.nextGroup(true); 
+const group = Matter.Body.nextGroup(true);
 
 
 function stopper(x, y, side, position) {
@@ -672,11 +667,11 @@ function stopper(x, y, side, position) {
     },
     collisionFilter: {
       group: group,
-    } 
+    }
     // ...
-  }; 
-  // ... 
-} 
+  };
+  // ...
+}
 
 function addMarble() {
   const marble = Matter.Bodies.circle(0, 0, 10, {
@@ -703,7 +698,7 @@ function addMarble() {
 }
 ```
 
-> \color{red}{弹珠的大小从14变成了10}。后面发现会被`brick`卡住，并且没法单独给`brick`设置`group`。
+> \color{red}{弹珠的大小从 14 变成了 10}。后面发现会被`brick`卡住，并且没法单独给`brick`设置`group`。
 
 ## 隐藏辅助物块
 
@@ -715,9 +710,9 @@ function stopper(x, y, side, position) {
     render: {
       fillStyle: 'red',
       visible: false,
-    }, 
+    },
     // ...
-  }; 
+  };
   // ...
 }
 
@@ -737,17 +732,17 @@ function stopper(x, y, side, position) {
 
 ```js
 import Matter from "matter-js";
-import 'pathseg';
-import MatterAttractors from 'matter-attractors';
+import "pathseg";
+import MatterAttractors from "matter-attractors";
 
 let engine;
 
 const PATHS = {
-  leftArrow: 'M 0 0 L 40 60 L 0 100 L 0 0',
+  leftArrow: "M 0 0 L 40 60 L 0 100 L 0 0",
   // 最高的那个点要作为出发点（不知道具体原因）
-  rightArrow: 'M 40 -60 L 40 40 L 0 0 L 40 -60',
-  leftBottom: 'M 0 0 L 0 -140 L 180 0 L 0 0',
-  rightBottom: 'M 0 -140 L 0 0 L -180 0 L 0 -140'
+  rightArrow: "M 40 -60 L 40 40 L 0 0 L 40 -60",
+  leftBottom: "M 0 0 L 0 -140 L 180 0 L 0 0",
+  rightBottom: "M 0 -140 L 0 0 L -180 0 L 0 -140",
 };
 
 const WIDTH = 500;
@@ -756,7 +751,7 @@ const HEIGHT = 640;
 const group = Matter.Body.nextGroup(true);
 
 function init() {
-  Matter.Common.setDecomp(require('poly-decomp'));
+  Matter.Common.setDecomp(require("poly-decomp"));
   Matter.use(MatterAttractors);
 
   engine = Matter.Engine.create();
@@ -781,9 +776,9 @@ function init() {
     constraint: {
       stiffness: 0.2,
       render: {
-        visible: false
-      }
-    }
+        visible: false,
+      },
+    },
   });
 
   Matter.Composite.add(engine.world, mouseConstraint);
@@ -837,62 +832,61 @@ function addBoundries() {
 let isLeftPaddleUp = false;
 let isRightPaddleUp = false;
 function addEvents() {
-  window.addEventListener('keypress', (e) => {
-    if (e.key.toLowerCase() === 'a') {
+  window.addEventListener("keypress", (e) => {
+    if (e.key.toLowerCase() === "a") {
       isLeftPaddleUp = true;
     } else {
       isLeftPaddleUp = false;
     }
 
-    if (e.key.toLowerCase() === 'd') {
+    if (e.key.toLowerCase() === "d") {
       isRightPaddleUp = true;
     } else {
       isRightPaddleUp = false;
     }
-  })
+  });
 
-  window.addEventListener('keyup', (e) => {
-    if (e.key.toLowerCase() === 'a') {
+  window.addEventListener("keyup", (e) => {
+    if (e.key.toLowerCase() === "a") {
       isLeftPaddleUp = false;
     }
 
-    if (e.key.toLowerCase() === 'd') {
+    if (e.key.toLowerCase() === "d") {
       isRightPaddleUp = false;
     }
-  })
+  });
 
-  Matter.Events.on(engine, 'collisionStart', (e) => {
+  Matter.Events.on(engine, "collisionStart", (e) => {
     e.pairs.forEach(function (pair) {
       const bodyA = pair.bodyA;
       const bodyB = pair.bodyB;
 
-      if (bodyA.label === 'reset') {
+      if (bodyA.label === "reset") {
         Matter.Composite.remove(engine.world, [bodyB]);
         addMarble();
       }
 
-      if (bodyB.label === 'reset') {
+      if (bodyB.label === "reset") {
         Matter.Composite.remove(engine.world, [bodyA]);
         addMarble();
       }
-    })
+    });
   });
 }
 
 function getPaddleStatus(side) {
-  const isPaddleUp = side === 'left' ? isLeftPaddleUp : isRightPaddleUp;
+  const isPaddleUp = side === "left" ? isLeftPaddleUp : isRightPaddleUp;
   return isPaddleUp;
 }
 
 function stopper(x, y, side, position) {
-  const judgeLabel = side === 'left' ? 'paddleLeftComp' : 'paddleRightComp';
-
+  const judgeLabel = side === "left" ? "paddleLeftComp" : "paddleRightComp";
 
   const options = {
     isStatic: true,
     render: {
-      fillStyle: 'red',
-      visible: false
+      fillStyle: "red",
+      visible: false,
     },
     collisionFilter: {
       group: group,
@@ -902,58 +896,64 @@ function stopper(x, y, side, position) {
         function (bodyA, bodyB) {
           if (bodyB.label === judgeLabel) {
             return {
-              x: (bodyA.position.x - bodyB.position.x) * 0.002 * ((getPaddleStatus(side)) ? -1 : 0.5),  // 0.5是防止松手后，吸引力太大导致变形
-              y: (bodyA.position.y - bodyB.position.y) * 0.002 * ((getPaddleStatus(side)) ? -1 : 0.5)
-            }
+              x:
+                (bodyA.position.x - bodyB.position.x) *
+                0.002 *
+                (getPaddleStatus(side) ? -1 : 0.5), // 0.5是防止松手后，吸引力太大导致变形
+              y:
+                (bodyA.position.y - bodyB.position.y) *
+                0.002 *
+                (getPaddleStatus(side) ? -1 : 0.5),
+            };
           }
-        }
-      ]
-    }
+        },
+      ],
+    },
   };
 
-  const hadForce = position === 'bottom';
+  const hadForce = position === "bottom";
   if (!hadForce) {
     // 只有下面的stopper有引（斥）力
-    Reflect.deleteProperty(options, 'plugin');
+    Reflect.deleteProperty(options, "plugin");
   }
 
   return Matter.Bodies.circle(x, y, 20, options);
 }
 
 function addPaddles() {
-  const stoperLeftTop = stopper(170, 460, 'left', 'top');
-  const stoperLeftBottom = stopper(136, 580, 'left', 'bottom');
-  const stoperRightTop = stopper(280, 460, 'right', 'top');
-  const stoperRightBottom = stopper(300, 580, 'right', 'bottom');
+  const stoperLeftTop = stopper(170, 460, "left", "top");
+  const stoperLeftBottom = stopper(136, 580, "left", "bottom");
+  const stoperRightTop = stopper(280, 460, "right", "top");
+  const stoperRightBottom = stopper(300, 580, "right", "bottom");
 
   Matter.Composite.add(engine.world, [
     stoperLeftTop,
     stoperLeftBottom,
     stoperRightTop,
-    stoperRightBottom
+    stoperRightBottom,
   ]);
 
   const paddleLeft = {};
   paddleLeft.paddle = Matter.Bodies.trapezoid(134, 512, 20, 88, 0.33, {
-    label: 'paddleLeft',
+    label: "paddleLeft",
     angle: 1.57,
     chamfer: {},
     render: {
-      fillStyle: 'skyblue'
-    }
+      fillStyle: "skyblue",
+    },
   });
 
   paddleLeft.brick = Matter.Bodies.rectangle(134, 524, 40, 40, {
     render: {
-      fillStyle: 'blue',
-      visible: false
+      fillStyle: "blue",
+      visible: false,
     },
   });
 
   // 将两个物块组装在一起
   paddleLeft.comp = Matter.Body.create({
-    label: 'paddleLeftComp',
-    parts: [paddleLeft.paddle, paddleLeft.brick]
+    label: "paddleLeftComp",
+    parts: [paddleLeft.paddle, paddleLeft.brick],
   });
 
   // bodyB表示给paddleLeft.comp添加约束，pointB则是相对paddleLeft.comp的坐标
@@ -962,7 +962,7 @@ function addPaddles() {
     bodyB: paddleLeft.comp,
     pointB: {
       x: -32,
-      y: -8
+      y: -8,
     },
     pointA: {
       x: paddleLeft.comp.position.x,
@@ -971,39 +971,39 @@ function addPaddles() {
     stiffness: 0.9,
     length: 0,
     render: {
-      strokeStyle: 'pink'
-    }
+      strokeStyle: "pink",
+    },
   });
   Matter.Composite.add(engine.world, constraintLeft);
 
   const paddleRight = {};
   paddleRight.paddle = Matter.Bodies.trapezoid(304, 512, 20, 88, 0.33, {
     // isStatic: true,
-    label: 'paddleRight',
+    label: "paddleRight",
     angle: -1.57,
     chamfer: {},
     render: {
-      fillStyle: 'skyblue'
-    }
+      fillStyle: "skyblue",
+    },
   });
 
   paddleRight.brick = Matter.Bodies.rectangle(304, 524, 40, 40, {
     render: {
-      fillStyle: 'blue',
-      visible: false
-    }
+      fillStyle: "blue",
+      visible: false,
+    },
   });
 
   paddleRight.comp = Matter.Body.create({
-    label: 'paddleRightComp',
-    parts: [paddleRight.paddle, paddleRight.brick]
+    label: "paddleRightComp",
+    parts: [paddleRight.paddle, paddleRight.brick],
   });
 
   const constraintRight = Matter.Constraint.create({
     bodyB: paddleRight.comp,
     pointB: {
       x: 32,
-      y: -8
+      y: -8,
     },
     pointA: {
       x: paddleRight.comp.position.x,
@@ -1012,25 +1012,22 @@ function addPaddles() {
     stiffness: 0.9,
     length: 0,
     render: {
-      strokeStyle: 'pink'
-    }
+      strokeStyle: "pink",
+    },
   });
   Matter.Composite.add(engine.world, constraintRight);
 
-  Matter.Composite.add(engine.world, [
-    paddleLeft.comp,
-    paddleRight.comp
-  ]);
+  Matter.Composite.add(engine.world, [paddleLeft.comp, paddleRight.comp]);
 }
 
 function addMarble() {
   const marble = Matter.Bodies.circle(0, 0, 10, {
     render: {
-      fillStyle: 'green'
+      fillStyle: "green",
     },
     collisionFilter: {
-      group: group
-    }
+      group: group,
+    },
   });
   Matter.Composite.add(engine.world, marble);
 
@@ -1113,27 +1110,29 @@ const loadSvg = function (url) {
     })
     .then(function (raw) {
       // 把加载的svg转成document对象
-      return (new window.DOMParser()).parseFromString(raw, 'image/svg+xml');
+      return new window.DOMParser().parseFromString(raw, "image/svg+xml");
     });
 };
 
 function svg(x, y, svgName) {
-  loadSvg(`/svg/${svgName}.svg`)
-    .then((root) => {
-      console.log(root);
+  loadSvg(`/svg/${svgName}.svg`).then((root) => {
+    console.log(root);
 
-      const vertices = [...root.querySelectorAll('path')].map(path => {
-        return Matter.Svg.pathToVertices(path, 36);
-      });
+    const vertices = [...root.querySelectorAll("path")].map((path) => {
+      return Matter.Svg.pathToVertices(path, 36);
+    });
 
-      Matter.Composite.add(engine.world, Matter.Bodies.fromVertices(x, y, vertices, {
+    Matter.Composite.add(
+      engine.world,
+      Matter.Bodies.fromVertices(x, y, vertices, {
         isStatic: true,
         render: {
-          fillStyle: '#495057',
-          lineWidth: 1
-        }
-      }));
-    })
+          fillStyle: "#495057",
+          lineWidth: 1,
+        },
+      })
+    );
+  });
 }
 
 function load() {
@@ -1148,7 +1147,7 @@ load();
 ```
 
 > 代码放仓库了，有兴趣的话，可以查看。
-> 
+>
 > [GitHub - clzczhc/marble](https://github.com/clzczhc/marble)
 
 ## 参考链接

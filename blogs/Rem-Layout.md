@@ -1,5 +1,6 @@
 ---
 title: rem适配布局
+date: 2021-09-27 09:12:18
 categories: "前端"
 tags:
 	- 布局
@@ -277,40 +278,38 @@ Less:
 @border: 5px;
 @size: 50px;
 div {
-    width: 200px + 50;
-    height: 200px - 50;
-    border: @border solid #ccc;
-    margin: 100px auto;
+  width: 200px + 50;
+  height: 200px - 50;
+  border: @border solid #ccc;
+  margin: 100px auto;
 }
 p {
-    width: (82rem / @size + 50px);
-    height: 82 / 50rem;
-    // 没有实现运算, height: 30 + 82 / 50rem; 会报错
-    // 改成 height: (30 + 82 / 50rem)
-        // 或 height: 30 + (82 / 50rem);
-    font-size: 82 + 15px + 3rem;
+  width: (82rem / @size + 50px);
+  height: 82 / 50rem;
+  // 没有实现运算, height: 30 + 82 / 50rem; 会报错
+  // 改成 height: (30 + 82 / 50rem)
+  // 或 height: 30 + (82 / 50rem);
+  font-size: 82 + 15px + 3rem;
 }
-
 ```
 
-生成的CSS:
+生成的 CSS:
 
 ```css
 div {
-    width: 250px;
-    height: 150px;
-    border: 5px solid #ccc;
-    margin: 100px auto;
+  width: 250px;
+  height: 150px;
+  border: 5px solid #ccc;
+  margin: 100px auto;
 }
 p {
-    width: 51.64rem;
-    height: 82 / 50rem;
-    font-size: 100px;
+  width: 51.64rem;
+  height: 82 / 50rem;
+  font-size: 100px;
 }
-
 ```
 
-## 
+##
 
 ## rem 适配方案
 
@@ -346,42 +345,38 @@ p {
 ![](https://pic.imgdb.cn/item/6107ef055132923bf88d211c.jpg)
 
 ```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    @media screen and (min-width: 320px) {
+      html {
+        font-size: 21.33px;
+      }
+    }
 
-    <!DOCTYPE html>
-    <html lang="zh-CN">
-    
-    <head>
-    	<meta charset="UTF-8">
-    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    	<title>Document</title>
-    </head>
-    <style>
-    	@media screen and (min-width: 320px) {
-    		html {
-    			font-size: 21.33px;
-    		}
-    	}
-    
-    	@media screen and (min-width: 750px) {
-    		html {
-    			font-size: 50px;
-    		}
-    	}
-    
-    	div {
-    		width: 2rem;
-    		height: 2rem;
-    		background-color: pink;
-    	}
-    </style>
-    
-    <body>
-    	<div></div>
-    </body>
-    
-    </html>
+    @media screen and (min-width: 750px) {
+      html {
+        font-size: 50px;
+      }
+    }
 
+    div {
+      width: 2rem;
+      height: 2rem;
+      background-color: pink;
+    }
+  </style>
+
+  <body>
+    <div></div>
+  </body>
+</html>
 ```
 
 rem 适配方案 1：
