@@ -71,9 +71,9 @@ const wait1ms = () => {
 `index.js`
 
 ```js
-(async () => {
-  const { Worker } = require("worker_threads");
+const { Worker } = require("worker_threads");
 
+(async () => {
   const numbers = Array(10000)
     .fill("")
     .map((value, index) => index);
@@ -109,13 +109,13 @@ const wait1ms = () => {
 `worker.js`
 
 ```js
+const { parentPort } = require("worker_threads");
+
 const wait1ms = () => {
   return new Promise((resolve) => {
     setTimeout(() => resolve(), 1);
   });
 };
-
-const { parentPort } = require("worker_threads");
 
 parentPort.on("message", async (numbers) => {
   let sum = 0;
