@@ -1,5 +1,5 @@
 ---
-title: 利用 fluentffmpeg 实现音频的“无损”转换
+title: fluentffmpeg 实现音频的“无损”转换
 date: 2024-03-01 00:17:00
 keywords: nodejs
 categories: 小技能
@@ -8,7 +8,7 @@ tags:
   - ffmpeg
 ---
 
-# 利用 fluentffmpeg 实现音频的“无损”转换
+# fluentffmpeg 实现音频的“无损”转换
 
 ## 前言
 
