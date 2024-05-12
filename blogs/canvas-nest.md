@@ -153,6 +153,4 @@ tags:
 
 ## 使用
 
-```html
-
-```
+![](https://www.clzczh.top/CLZ_img/images/202405122246103.gif)
