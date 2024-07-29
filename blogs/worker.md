@@ -1,14 +1,15 @@
 ---
-title: nodejs 使用 Worker
+title: nodejs 使用 Worker、Web Worker使用
 categories: node.js
 date: 2024-02-29 20:41:00
 tags:
   - node.js
   - javascript
   - Worker
+  - Web Worker
 ---
 
-# nodejs 使用 Worker
+# nodejs 使用 Worker、Web Worker 使用
 
 ## 前言
 
@@ -66,7 +67,7 @@ const wait1ms = () => {
 
 ### 使用 Worker 多线程处理
 
-> 把任务分给 32 个 worker 线程。**注意，一般不会开启这么多worker线程，一般太多会浪费资源之类的。但是在这个demo中，使用32个线程效率很高，更能衬托出worker线程的强大就这么弄了。**
+> 把任务分给 32 个 worker 线程。**注意，一般不会开启这么多 worker 线程，一般太多会浪费资源之类的。但是在这个 demo 中，使用 32 个线程效率很高，更能衬托出 worker 线程的强大就这么弄了。**
 
 `index.js`
 
@@ -131,3 +132,86 @@ parentPort.on("message", async (numbers) => {
 ![](https://www.clzczh.top/CLZ_img/images/202402292038556.png)
 
 > 😔。用自己的电脑真的跟用公司电脑跑差太多了。公司电脑处理一万条数据，一样 32 个 worker 线程，只需要几百毫秒。
+
+### Web Worker 使用
+
+上面的 Worker 使用是在 nodejs 环境中运行的，实际上还可以在浏览器环境中使用 Web Worker。
+
+使用方式跟 nodejs 环境的类似，有三点区别：
+
+1. nodejs 绑定监听事件是`.on('message', () => {})`的形式绑定的，而浏览器则还是`addEventListener`或者`onmessage`那一套
+2. nodejs 监听`message`事件，参数就是传递的数据，而浏览器的参数是`event`对象，`event`的`data`属性才是数据
+3. `nodejs`的`workerjs`是引入`parentPort`进行事件的监听，而浏览器可以直接使用`self`来进行监听
+   > $\color{red}{Worker线程的全局对象是`self`，而不是浏览器环境中的`window`}$
+
+代码：
+html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script>
+      (async () => {
+        const numbers = Array(10000)
+          .fill("")
+          .map((value, index) => index);
+
+        console.time();
+
+        const workerNum = 7;
+        const count = Math.ceil(numbers.length / workerNum);
+
+        let sum = 0;
+        let completeWorkerNum = 0;
+
+        while (numbers.length > 0) {
+          const workerData = numbers.splice(0, count);
+          const worker = new Worker("./worker.js");
+          worker.postMessage(workerData);
+
+          worker.onmessage = (event) => {
+            sum += event.data;
+            completeWorkerNum++;
+
+            if (completeWorkerNum === workerNum) {
+              console.log(sum);
+              console.timeEnd();
+            }
+
+            worker.terminate();
+          };
+        }
+      })();
+    </script>
+  </body>
+</html>
+```
+
+worker.js
+
+```js
+const wait1ms = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), 1);
+  });
+};
+
+self.addEventListener("message", async (event) => {
+  const numbers = event.data;
+
+  let sum = 0;
+  for (let i = 0; i < numbers.length; i++) {
+    await wait1ms();
+    sum += numbers[i];
+  }
+
+  self.postMessage(sum);
+});
+```
