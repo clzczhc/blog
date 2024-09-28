@@ -561,3 +561,28 @@ body {
   font-size: 150px;
 }
 ```
+
+
+c.svg
+```svg
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1726760982830" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4421" width="500" height="500" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path fill="#fff" d="M786.225 285.8c-125-125-311.6-125-436.6 0s-125 327.6 0 452.6 311.6 125 436.6 0c25-25 65.6-25 90.6 0s25 65.6 0 90.6c-175 175-442.6 175-617.6 0s-175-458.6 0-633.6 442.6-175 617.6 0c25 25 25 65.6 0 90.6s-65.6 25-90.6 0z" p-id="4422"></path>
+</svg>
+```
+
+l.svg
+```svg
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1726761022424" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5745" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500">
+  <path fill="#fff" d="M320 64c35.4 0 64 28.6 64 64v704h384c35.4 0 64 28.6 64 64s-28.6 64-64 64H320c-35.4 0-64-28.6-64-64V128c0-35.4 28.6-64 64-64z" p-id="5746"></path>
+</svg>
+```
+
+z.svg
+```svg
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1726761058129" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7677" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500">
+  <path fill="#fff" d="M127.99999 128c0-35.4 28.6-64 64-64h640c24.8 0 47.4 14.4 58 36.8s7.2 49-8.8 68.2L328.59999 832H831.99999c35.4 0 64 28.6 64 64s-28.6 64-64 64H191.99999c-24.8 0-47.4-14.4-58-36.8s-7.2-49 8.8-68.2L695.39999 192H191.99999C156.59999 192 127.99999 163.4 127.99999 128z" p-id="7678"></path>
+</svg>
+```
