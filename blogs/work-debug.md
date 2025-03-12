@@ -1,4 +1,4 @@
-# 工作中的那点事之调试技巧
+# 工作中的那点事之调试
 
 ## 调试`onMouseEnter`后出现的元素
 
@@ -77,3 +77,41 @@ function App() {
 并且可以通过一些伪元素来修改默认样式：[::-webkit-slider-runnable-track](https://developer.mozilla.org/zh-CN/docs/Web/CSS/::-webkit-slider-runnable-track)
 
 ![](https://www.clzczh.top/CLZ_img/images/20250310223911.png)
+
+### click-to-react-component
+
+当项目代码非常多的时候，找对应的组件都有可能很困难。即使通过关键字查询，也可能会出现一堆匹配的代码。
+
+这个时候可以使用`click-to-react-component`来辅助调试。
+
+使用方式也非常简单：
+
+1. 安装：`npm install click-to-react-component`
+2. 入口文件引入
+
+```tsx
+import { createRoot } from "react-dom/client";
+import { ClickToComponent } from "click-to-react-component";
+
+import App from "./App";
+
+const rootEl = document.querySelector("#root");
+createRoot(rootEl!).render(
+  <>
+    <App />
+    <ClickToComponent />
+  </>
+);
+```
+
+3. `alt + 左键`点击页面元素，即可打开 vscode，并定位到对应的代码。
+
+![](https://www.clzczh.top/CLZ_img/images/20250312212247.png)
+![](https://www.clzczh.top/CLZ_img/images/20250312212423.png)
+
+> 从上面的链接，可以定位到具体文件的行、列。
+
+![](https://www.clzczh.top/CLZ_img/images/20250312212731.png)
+`alt + 右键`可以看到所有的父组件，同样可以选中具体的父组件，使用 vscode 打开。
+
+可以看[React 项目里，如何快速定位你的组件源码？](https://juejin.cn/post/7374631918111178790)，会提到实现原理。
