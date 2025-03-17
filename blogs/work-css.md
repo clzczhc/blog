@@ -126,6 +126,90 @@ svg
 
 ![](https://www.clzczh.top/CLZ_img/images/20250313234815.png)
 
-### 注意点
-
+**注意点**：
 icon 混合后的颜色可以是设置的渐变色的前提是 icon 的颜色是黑/白，如果是其他颜色，则不一定能得到想要的效果。
+
+## 给透明图片的文字添加阴影
+
+```css
+backdrop-filter: drop-shadow(0 0 15px rgba(0, 0, 0));
+```
+
+[drop-shadow](https://developer.mozilla.org/zh-CN/docs/Web/CSS/filter-function/drop-shadow)
+
+**注意点**：
+理论上，`drop-shadow`的阴影跟`box-shadow`阴影的值是一样的。但是实际上，大部分浏览器不支持`drop-shadow`的扩散半径这个参数（Chrome 最新版本 134 都不支持）
+
+所以相当于跟`box-shadow`的值有所差异
+
+## `clip-path`绘制特殊图形
+
+```html
+<style>
+  .arrow {
+    width: 200px;
+    height: 100px;
+    clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0 100%, 25% 50%);
+    background: pink;
+  }
+</style>
+<div class="arrow"></div>
+```
+
+![](https://www.clzczh.top/CLZ_img/images/20250317215908.png)
+
+> `clip-path`还支持 svg 的`path`，所以基本上大部分图形都可以使用`clip-path`绘制。
+
+## 利用`background`的层级概念给背景添加遮罩
+
+> 需要给背景添加遮罩，通过绝对定位添加遮罩层，还需要解决阻挡事件的问题，可以利用`background`的层级概念给背景添加遮罩。
+
+`background`支持设置多个背景，第一个背景在最上面，最后一个背景在最下面。
+
+所以说，理论上来说，设置`background-image: rgba(0, 0, 0, 0.5), url("./21.png")`即可。
+但是实际上会报错：
+![](https://www.clzczh.top/CLZ_img/images/20250317221806.png)
+
+这是因为`background-image`不支持纯色背景，所以需要将纯色改为起止渐变一样的渐变色，
+即`background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("./21.png");`
+
+```css
+.box {
+  width: 400px;
+  height: 200px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("./21.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+```
+
+效果：
+![](https://www.clzczh.top/CLZ_img/images/20250317222619.png)
+
+## 栅格系统轻量化工具
+
+### flexboxgrid
+
+[flexboxgrid](https://github.com/kristoferjoseph/flexboxgrid)
+
+| flexboxgrid                                                                            | antd grid                                       |
+| :------------------------------------------------------------------------------------- | :---------------------------------------------- |
+| 12 栅格                                                                                | 24 栅格                                         |
+| 添加指定类名用法，`row`、`col-xs-12`，`col-lg-4`                                       | 组件用法，Row、Col 组件                         |
+| 不需要响应式时，没有专门的用法，而是通过`col-xs-*`来使用。（媒体查询设置的 min-width） | 不需要响应时，可以直接使用 span={8}的方式来使用 |
+
+flexboxgrid 有大部分 antd grid 的效果。
+
+flexboxgrid 实现原理跟 antd grid 类似，都是通过 flex-basis 和 max-width 来实现
+
+### react-flexbox-grid
+
+[react-flexbox-grid](https://github.com/roylee0704/react-flexbox-grid)
+
+flexboxgrid 的 react 组件版本
+![](https://www.clzczh.top/CLZ_img/images/20250317223008.png)
+
+## flex 左右定宽，中间自适应溢出省略号
+
+关键点：中间设置`min-width: 0`
