@@ -28,6 +28,35 @@
 
 效果：![](https://www.clzczh.top/CLZ_img/images/fake.gif)
 
+## 伪元素使用图片资源
+
+使用场景同上。
+
+```css
+.box::before {
+  content: url("./imgs/bell.svg");
+}
+```
+
+这个方法修改 bootstrap 的图标时，会很方便。只需要将 content: '\f8cc'这种改成上面的样子即可。
+
+支持 base64 编码。获取 svg 的 base64 编码可以参考下面的方式。
+![](https://www.clzczh.top/CLZ_img/images/20250318230602.png)
+
+如果是图片，使用 content: url()的方式引入外部图片，会无法设置宽高，可以改为使用 background。
+
+```css
+.box::before {
+  content: "";
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  background: url("https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png")
+    center no-repeat;
+  background-size: cover;
+}
+```
+
 ## `mix-blend-mode`实现 icon 渐变色
 
 使用场景：同一个 icon，对应不同的会员体系，icon 的颜色不同，并且是渐变色。
@@ -210,6 +239,119 @@ flexboxgrid 实现原理跟 antd grid 类似，都是通过 flex-basis 和 max-w
 flexboxgrid 的 react 组件版本
 ![](https://www.clzczh.top/CLZ_img/images/20250317223008.png)
 
-## flex 左右定宽，中间自适应溢出省略号
+## `scroll-snap-*`滚动吸附
 
-关键点：中间设置`min-width: 0`
+> `scroll-snap-type`: x mandatoy。开启滚动吸附，x 轴如果没有在滚动，则自动吸附到吸附位置。
+> `scroll-snap-align`: center。设置吸附位置
+> `scroll-snap-stop`：定义了滚动容器是否可“越过”吸附位置
+
+简单例子：
+
+```html
+<style>
+  .container {
+    display: flex;
+    width: 400px;
+    height: 200px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .box {
+    flex-shrink: 0;
+    width: 400px;
+    scroll-snap-align: center;
+  }
+
+  .box:nth-child(2n + 1) {
+    background: pink;
+  }
+
+  .box:nth-child(2n) {
+    background: purple;
+  }
+</style>
+<div class="container">
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+</div>
+```
+
+效果：
+![](https://www.clzczh.top/CLZ_img/images/scroll.gif)
+
+### 简单说明
+
+#### `scroll-snap-align`
+
+如果像上面一样，滚动容器的子元素都占满滚动容器，那么`scroll-snap-align`的值不管是什么都是一样的效果。
+
+![](https://www.clzczh.top/CLZ_img/images/20250318223532.png)
+但是如果像上图一样的话，值不一样，效果差别特别大。
+
+值为`start`：第二屏以及出现了，所以会吸附到**第二屏在最左边的位置**。
+![](https://www.clzczh.top/CLZ_img/images/20250318223737.png)
+
+值为`center`、`end`的时候，同理，分别是吸附到**第二屏在中间**、\*\*第二屏在最右边的位置。
+
+#### `scroll-snap-stop`
+
+官网的例子可以比较好的说明：[scroll-snap-stop](https://developer.mozilla.org/zh-CN/docs/Web/CSS/scroll-snap-stop)
+
+> 使用移动端体验会更明显。
+
+设置`scroll-snap-stop: normal`时，快速滑动，会有一个类似惯性一样，自动滚到停为止。
+而设置`scroll-snap-stop: always`时，快速滑动也会卡在吸附位置。
+
+## @media (hover)
+
+```css
+@media (hover) {
+  .box:hover {
+    // 只有能悬浮的设备会有样式。(手机不可以)
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  /* 当满足下面任意一条条件时，应用样式 */
+  /* 1. 设备不支持鼠标悬浮事件 */
+  /* 2. 设备的指针类型是粗糙的，如触摸屏设备、触控笔 */
+  .slider:hover {
+    .tooltip {
+      opacity: 0;
+    }
+  }
+}
+```
+
+## 两个溢出省略（有先后顺序）
+
+先溢出省略，达到限制后另一个溢出省略
+
+```html
+<style>
+  .container {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+  }
+  .child {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .B {
+    /* 设置flex: 1；
+      相当于设置了flex-grow: 1;会平分剩余空间，设置了flex-basic: 0;子项会被认为是没有基础大小
+      这样container盒子变小时，B元素会慢慢变小，直到宽变为0
+      搭配min-width，就会把宽变为0的限制变成min-width。这样子在变成min-width之前都会是让B元素变小 */
+    flex: 1;
+    min-width: 60px;
+  }
+</style>
+<div class="container">
+  <div class="child A">Long text for child A</div>
+  <div class="child B">Long text for child B</div>
+</div>
+```
