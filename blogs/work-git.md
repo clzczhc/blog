@@ -24,6 +24,16 @@
 
 解决问题后，再回到暂存 commit 的分支，使用`git reset --soft HEAD~`把东西又吐出来。
 
+## git revert
+
+撤销修改。跟`git reset --hard`的区别是，它的撤销是新增加一个 commit，把修改的内容自动撤销。所以不会需要`git push --force`，不容易出意外。
+
+![](https://www.clzczh.top/CLZ_img/images/202503262236591.png)
+场景：当前有两个 commit，第一个是添加`a.txt`文件，第二个是添加`b.txt`，并且修改`a.txt`为`c.txt`。（文件内容为文件名。
+
+现在想要撤销第二个 commit，只需要使用`git revert [第二个commitID]`即可。
+![](https://www.clzczh.top/CLZ_img/images/202503262239846.png)
+
 ## git rebase -i
 
 在团队开发中，经常会使用到`git rebase`来更新分支。
