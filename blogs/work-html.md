@@ -54,6 +54,76 @@
 
 [dom 节点转 svg](https://www.clzczh.top/2024/04/21/dom-to-svg/)
 
+## `contenteditable`
+
+> 给元素添加上该属性后，元素就可以被用户编辑。市面上的部分富文本编辑器就是基于该属性实现的，如`Quill`。
+
+浅浅尝试：
+
+```html
+<div class="box" contenteditable>123</div>
+<script>
+  const element = document.querySelector("div");
+  element.addEventListener("paste", (e) => {
+    const file = e.clipboardData.files[0];
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.result) {
+        const img = document.createElement("img");
+        img.src = reader.result;
+        img.width = 200;
+        element.appendChild(img);
+      }
+    };
+
+    reader.readAsDataURL(file);
+  });
+</script>
+```
+
+> 添加`contenteditable`属性后，可以绑定`paste`监听粘贴操作，然后利用`FileReader`可以把文件转成 base64。
+
+效果：
+![](https://www.clzczh.top/CLZ_img/images/202504082031257.gif)
+
+更多查看：
+[contenteditable](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Global_attributes/contenteditable)
+[深入浅出 contenteditable 富文本编辑器](https://zhuanlan.zhihu.com/p/37051858)
+
+## base64 编解码
+
+### `btoa`、`atob`
+
+```js
+let encodedData = window.btoa("Hello, world"); // 编码
+let decodedData = window.atob(encodedData); // 解码
+```
+
+### Buffer
+
+nodejs 环境可以利用`Buffer`实现
+
+```js
+const person = {
+  name: "赤蓝紫",
+};
+
+const personString = JSON.stringify(person);
+
+const buffer = Buffer.from(personString, "utf8");
+
+const base64 = buffer.toString("base64");
+console.log(base64);
+
+const originalString = Buffer.from(base64, "base64").toString("utf8");
+console.log(originalString);
+```
+
+### 可能会用到的其他方案
+
+[How to convert uint8 Array to base64 Encoded String?](https://stackoverflow.com/questions/12710001/how-to-convert-uint8-array-to-base64-encoded-string/12713326#12713326)
+
 ## [HTML 标准](https://html.spec.whatwg.org/)
 
 ## 黑技术
