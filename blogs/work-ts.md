@@ -1,3 +1,12 @@
+---
+title: 工作中的那点事之 TypeScript
+date: 2025-03-12 22:00:05
+categories: "前端"
+tags:
+  - 工作中的那点事
+  - TypeScript
+---
+
 # 工作中的那点事之 TypeScript
 
 ## `as const`处理 ts 类型误差

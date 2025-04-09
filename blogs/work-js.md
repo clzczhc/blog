@@ -1,3 +1,12 @@
+---
+title: 工作中的那点事之 JavaScript
+date: 2025-04-02 23:53:05
+categories: "前端"
+tags:
+  - 工作中的那点事
+  - JavaScript
+---
+
 # 工作中的那点事之 JavaScript
 
 ## Navigator.sendBeacon（埋点）
@@ -89,3 +98,32 @@ app.listen(3000, () => {
 ![](https://www.clzczh.top/CLZ_img/images/202504022341617.gif)
 
 > 从上图中，可以看到`sendBeacon`的**支持跨域**这个特点
+
+## base64 编解码
+
+### `btoa`、`atob`
+
+```js
+let encodedData = window.btoa("Hello, world"); // 编码
+let decodedData = window.atob(encodedData); // 解码
+```
+
+### Buffer
+
+nodejs 环境可以利用`Buffer`实现
+
+```js
+const person = {
+  name: "赤蓝紫",
+};
+
+const personString = JSON.stringify(person);
+
+const buffer = Buffer.from(personString, "utf8");
+
+const base64 = buffer.toString("base64");
+console.log(base64);
+
+const originalString = Buffer.from(base64, "base64").toString("utf8");
+console.log(originalString);
+```

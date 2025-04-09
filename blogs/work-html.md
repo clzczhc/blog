@@ -1,4 +1,14 @@
-# 工作中的那点事之 HTML、SVG
+---
+title: 工作中的那点事之 HTML
+date: 2025-04-02 23:53:05
+categories: "前端"
+tags:
+  - 工作中的那点事
+  - HTML
+  - SVG
+---
+
+# 工作中的那点事之 HTML
 
 ## SVG
 
@@ -90,35 +100,6 @@
 更多查看：
 [contenteditable](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Global_attributes/contenteditable)
 [深入浅出 contenteditable 富文本编辑器](https://zhuanlan.zhihu.com/p/37051858)
-
-## base64 编解码
-
-### `btoa`、`atob`
-
-```js
-let encodedData = window.btoa("Hello, world"); // 编码
-let decodedData = window.atob(encodedData); // 解码
-```
-
-### Buffer
-
-nodejs 环境可以利用`Buffer`实现
-
-```js
-const person = {
-  name: "赤蓝紫",
-};
-
-const personString = JSON.stringify(person);
-
-const buffer = Buffer.from(personString, "utf8");
-
-const base64 = buffer.toString("base64");
-console.log(base64);
-
-const originalString = Buffer.from(base64, "base64").toString("utf8");
-console.log(originalString);
-```
 
 ### 可能会用到的其他方案
 

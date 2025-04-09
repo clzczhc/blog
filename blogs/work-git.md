@@ -1,3 +1,12 @@
+---
+title: 工作中的那点事之 杂项
+date: 2025-03-11 22:04:05
+categories: "前端"
+tags:
+  - 工作中的那点事
+  - git
+---
+
 # 工作中的那点事之 Git
 
 ## git reset --soft
