@@ -87,6 +87,12 @@ function App() {
 
 ![](https://www.clzczh.top/CLZ_img/images/20250310223911.png)
 
+### 网络状态模拟其他端
+
+![](https://www.clzczh.top/CLZ_img/images/202504121828174.png)
+
+如上图所示，不使用默认配置。可以选内置的选项，或者自定义，然后输入 ua 头，模拟其他端的环境。
+
 ### click-to-react-component
 
 当项目代码非常多的时候，找对应的组件都有可能很困难。即使通过关键字查询，也可能会出现一堆匹配的代码。

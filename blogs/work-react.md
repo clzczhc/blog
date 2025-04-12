@@ -237,3 +237,43 @@ export const Comp2 = () => {
 ```
 
 ![](https://www.clzczh.top/CLZ_img/images/202504042242773.gif)
+
+## Render Props
+
+组件的`children`属性可以接收一个函数，该函数的参数为组件的内部状态，并返回 React 元素。
+
+通过这种方式，可以将状态与渲染解耦，状态管理在组件内部，而渲染逻辑交给外面处理。可以在多个地方复用逻辑，即使 UI 差别很大。
+
+demo:
+
+```tsx
+import { memo, ReactElement, useState } from "react";
+
+interface ComponentProps {
+  children: (count: number) => React.ReactElement;
+}
+
+const Component = memo((props: ComponentProps) => {
+  const { children } = props;
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      {children(count)}
+      <button onClick={(): void => setCount(count + 1)}>+1</button>
+    </div>
+  );
+});
+
+export default function Home() {
+  return (
+    <>
+      <Component>
+        {(count): ReactElement => {
+          return <div>{count}</div>;
+        }}
+      </Component>
+    </>
+  );
+}
+```

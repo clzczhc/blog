@@ -1,5 +1,5 @@
 ---
-title: 工作中的那点事之 杂项
+title: 工作中的那点事之 Docusaurus
 date: 2025-03-22 11:02:05
 categories: "前端"
 tags:
@@ -7,7 +7,7 @@ tags:
   - docusaurus
 ---
 
-# 工作中的那点事之 docusaurus
+# 工作中的那点事之 Docusaurus
 
 ## 前言
 
